@@ -42,8 +42,8 @@ input,textarea,select{width:100%;padding:9px;border:1px solid #c9d3e6;border-rad
 <section class="panel">
 <div class="row"><div><label>النوع</label><select id="kind"><option>فاتورة</option><option>عرض سعر</option><option>إيصال استلام</option></select></div><div><label>رقم</label><input id="no" inputmode="numeric"></div></div>
 <div class="row"><div><label>التاريخ</label><input id="date" type="date"></div><div><label>العملة</label><select id="cur"><option value="جنيه|جنيهاً|قرش">جنيه مصري</option><option value="ريال|ريالاً|هللة">ريال سعودي</option><option value="درهم|درهماً|فلس">درهم إماراتي</option><option value="دولار|دولاراً|سنت">دولار</option></select></div></div>
-<h2>بياناتك</h2><label>الاسم / الشركة</label><input id="me"><label>تليفون / عنوان / رقم ضريبي</label><textarea id="meinfo"></textarea>
-<h2>العميل</h2><label>اسم العميل</label><input id="cl"><label>تليفون / عنوان</label><input id="clinfo">
+<h2>بياناتك</h2><label>لوجو (اختياري)</label><input type="file" id="lg" accept="image/*"><button class="btn l" id="nlg" style="padding:6px;font-size:13px">إزالة اللوجو</button><label>الاسم / الشركة</label><input id="me"><label>تليفون / عنوان / رقم ضريبي</label><textarea id="meinfo"></textarea>
+<h2>العميل</h2><label>اسم العميل</label><input id="cl" list="cls" autocomplete="off"><datalist id="cls"></datalist><label>تليفون / عنوان</label><input id="clinfo">
 <h2>البنود <button class="btn l" id="add" style="display:inline-block;width:auto;padding:3px 12px;margin:0;float:left">+ بند</button></h2><div id="items"></div>
 <div class="row"><div><label>خصم (مبلغ)</label><input id="disc" inputmode="decimal"></div><div><label>ضريبة %</label><input id="tax" inputmode="decimal" placeholder="14"></div></div>
 <label>ملاحظات وشروط الدفع</label><textarea id="note" placeholder="الدفع خلال 7 أيام، ضمان سنة..."></textarea>
@@ -57,7 +57,7 @@ input,textarea,select{width:100%;padding:9px;border:1px solid #c9d3e6;border-rad
 </main>
 <script>
 var $=function(i){return document.getElementById(i)};
-var K="fatoorty_v1",D={kind:"فاتورة",no:"1",date:new Date().toISOString().slice(0,10),cur:"جنيه|جنيهاً|قرش",me:"",meinfo:"",cl:"",clinfo:"",items:[{n:"",q:1,p:""}],disc:"",tax:"",note:"",col:"#1d4ed8"};
+var K="fatoorty_v1",D={kind:"فاتورة",no:"1",date:new Date().toISOString().slice(0,10),cur:"جنيه|جنيهاً|قرش",me:"",meinfo:"",cl:"",clinfo:"",items:[{n:"",q:1,p:""}],disc:"",tax:"",note:"",col:"#1d4ed8",logo:"",cls:[]};
 try{var s=JSON.parse(localStorage.getItem(K));if(s)for(var k in s)D[k]=s[k]}catch(e){}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function num(x){x=parseFloat(String(x).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(",","."));return isFinite(x)?x:0}
@@ -83,7 +83,7 @@ function money(x,cur){var f=CF[cur.split("|")[0]],t=Math.round(x*100),w=Math.flo
 function calc(){var sub=0;D.items.forEach(function(i){sub+=num(i.q)*num(i.p)});var d=Math.min(num(D.disc),sub),tx=(sub-d)*num(D.tax)/100;return{sub:sub,d:d,tx:tx,tot:sub-d+tx}}
 function render(){var c=calc(),cur=D.cur.split("|")[0],inv=$("inv");inv.style.setProperty("--c",D.col);
  var rows=D.items.filter(function(i){return i.n||num(i.p)}).map(function(i,k){return '<tr><td>'+(k+1)+'</td><td>'+esc(i.n)+'</td><td class="n">'+esc(num(i.q))+'</td><td class="n">'+fmt(num(i.p))+'</td><td class="n">'+fmt(num(i.q)*num(i.p))+'</td></tr>'}).join("");
- inv.innerHTML='<div class="top"><div><h1>'+esc(D.kind)+'</h1><div style="font-size:16px;font-weight:700;margin-top:6px">'+esc(D.me||"اسمك / شركتك")+'</div><div style="white-space:pre-wrap;color:#555;font-size:13px">'+esc(D.meinfo)+'</div></div><div class="meta">رقم: <b>'+esc(D.no)+'</b><br>التاريخ: <b dir="ltr">'+esc(D.date)+'</b></div></div>'
+ inv.innerHTML='<div class="top"><div>'+(D.logo?'<img src="'+D.logo+'" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px">':"")+'<h1>'+esc(D.kind)+'</h1><div style="font-size:16px;font-weight:700;margin-top:6px">'+esc(D.me||"اسمك / شركتك")+'</div><div style="white-space:pre-wrap;color:#555;font-size:13px">'+esc(D.meinfo)+'</div></div><div class="meta">رقم: <b>'+esc(D.no)+'</b><br>التاريخ: <b dir="ltr">'+esc(D.date)+'</b></div></div>'
  +'<div class="two"><div><h4>العميل</h4><b>'+esc(D.cl||"-")+'</b><div style="color:#555;font-size:13px">'+esc(D.clinfo)+'</div></div></div>'
  +'<table><tr><th>#</th><th>البيان</th><th class="n">الكمية</th><th class="n">السعر</th><th class="n">الإجمالي</th></tr>'+rows+'</table>'
  +'<div class="tot"><div><span>المجموع</span><span>'+fmt(c.sub)+'</span></div>'+(c.d?'<div><span>الخصم</span><span>- '+fmt(c.d)+'</span></div>':'')+(c.tx?'<div><span>ضريبة '+esc(num(D.tax))+'%</span><span>'+fmt(c.tx)+'</span></div>':'')+'<div class="big"><span>الإجمالي ('+esc(cur)+')</span><span>'+fmt(c.tot)+'</span></div></div>'
@@ -99,11 +99,16 @@ function items(){$("items").innerHTML=D.items.map(function(i,k){return '<div cla
  $("items").querySelectorAll("input").forEach(function(e){e.oninput=function(){D.items[+e.dataset.k][e.dataset.f]=e.value;upd()}});
  $("items").querySelectorAll(".x").forEach(function(b){b.onclick=function(){D.items.splice(+b.dataset.k,1);if(!D.items.length)D.items.push({n:"",q:1,p:""});items();upd()}})}
 $("add").onclick=function(){D.items.push({n:"",q:1,p:""});items();upd()};
-$("nx").onclick=function(){D.no=String(num(D.no)+1);D.items=[{n:"",q:1,p:""}];D.disc="";D.cl="";D.clinfo="";D.date=new Date().toISOString().slice(0,10);fill()};
-$("pr").onclick=function(){document.title=D.kind+" "+D.no;window.print()};
+$("nx").onclick=function(){rememberClient();D.no=String(num(D.no)+1);D.items=[{n:"",q:1,p:""}];D.disc="";D.cl="";D.clinfo="";D.date=new Date().toISOString().slice(0,10);fill()};
+$("pr").onclick=function(){rememberClient();save();clist();document.title=D.kind+" "+D.no;window.print()};
 window.addEventListener("beforeprint",function(){$("inv").style.zoom=1});window.addEventListener("afterprint",render);window.addEventListener("resize",render);
 $("te").onclick=function(){$("main").className="ed";$("te").className="on";$("tp").className=""};$("tp").onclick=function(){$("main").className="pv";$("tp").className="on";$("te").className="";setTimeout(render,50)};
-function fill(){["kind","no","date","cur","me","meinfo","cl","clinfo","disc","tax","note","col"].forEach(function(f){$(f).value=D[f]});items();upd()}
+$("lg").onchange=function(){var f=this.files[0];if(!f)return;var im=new Image();im.onload=function(){var c=document.createElement("canvas"),k=Math.min(1,240/Math.max(im.width,im.height));c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);D.logo=c.toDataURL("image/png");upd()};im.src=URL.createObjectURL(f)};
+$("nlg").onclick=function(){D.logo="";upd()};
+function rememberClient(){var n=(D.cl||"").trim();if(!n)return;D.cls=(D.cls||[]).filter(function(c){return c.n!=n});D.cls.unshift({n:n,i:D.clinfo});D.cls=D.cls.slice(0,20)}
+function clist(){$("cls").innerHTML=(D.cls||[]).map(function(c){return '<option value="'+esc(c.n)+'">'}).join("")}
+$("cl").addEventListener("change",function(){var c=(D.cls||[]).filter(function(x){return x.n==D.cl})[0];if(c&&!D.clinfo){D.clinfo=c.i;$("clinfo").value=c.i;upd()}});
+function fill(){clist();["kind","no","date","cur","me","meinfo","cl","clinfo","disc","tax","note","col"].forEach(function(f){$(f).value=D[f]});items();upd()}
 if(window.matchMedia("(max-width:860px)").matches)$("main").className="ed";else $("main").className="";
 fill();
 </script></body></html>
