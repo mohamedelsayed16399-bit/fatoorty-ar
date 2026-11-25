@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فاتورتي - اعمل فاتورة أو عرض سعر PDF بالعربي</title>
+<meta name="description" content="اعمل فاتورة أو عرض سعر شيك بالعربي في دقيقة، الإجمالي بالأرقام وبالحروف، نزّله PDF وابعته واتساب. مجاناً وبدون تسجيل">
+<meta name="theme-color" content="#1d4ed8">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:#eef1f7;color:#1f2937}
+header{background:linear-gradient(135deg,#1d4ed8,#38bdf8);color:#fff;padding:14px 16px}header h1{margin:0;font-size:22px}header small{opacity:.92}
+.tabs{display:none;background:#fff;position:sticky;top:0;z-index:5;box-shadow:0 1px 4px #0002}.tabs button{flex:1;padding:12px;border:0;background:none;font:inherit;font-weight:700;font-size:16px;color:#555}.tabs button.on{color:#1d4ed8;border-bottom:3px solid #1d4ed8}
+main{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:14px;padding:14px;max-width:1250px;margin:auto}
+.panel{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 8px #0001}
+.panel h2{font-size:15px;margin:14px 0 6px;color:#1d4ed8;border-bottom:2px solid #dbeafe;padding-bottom:4px}.panel h2:first-child{margin-top:0}
+label{display:block;font-size:13px;margin:7px 0 3px;color:#555}
+input,textarea,select{width:100%;padding:9px;border:1px solid #c9d3e6;border-radius:8px;font:inherit;font-size:15px}textarea{min-height:60px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.it{background:#f3f7ff;border:1px dashed #9db7ea;border-radius:10px;padding:8px;margin:7px 0;position:relative}
+.it .g{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px}.it .x{position:absolute;top:2px;left:6px;border:0;background:none;color:#c0392b;font-size:18px;cursor:pointer}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:12px;font:inherit;font-weight:700;font-size:15px;margin-top:8px;cursor:pointer;background:#1d4ed8;color:#fff;text-align:center;text-decoration:none}.btn.l{background:#e6eefc;color:#1d4ed8}.btn.g{background:#25d366}
+#wrap{overflow:auto;background:#d6dcea;border-radius:14px;padding:10px}
+#inv{width:794px;min-height:1000px;background:#fff;padding:40px;box-shadow:0 4px 16px #0003;font-size:14px;line-height:1.6;margin:auto}
+#inv .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:4px solid var(--c);padding-bottom:14px}
+#inv h1{margin:0;color:var(--c);font-size:34px}
+#inv .meta{text-align:left;direction:rtl;font-size:13px;color:#555}
+#inv .two{display:flex;justify-content:space-between;gap:20px;margin:18px 0}#inv .two div{flex:1}#inv .two h4{margin:0 0 4px;color:var(--c)}
+#inv table{width:100%;border-collapse:collapse;margin-top:8px}
+#inv th{background:var(--c);color:#fff;padding:8px;text-align:right;font-size:13px}
+#inv td{padding:8px;border-bottom:1px solid #e5e7eb}
+#inv td.n,#inv th.n{text-align:left;direction:ltr;white-space:nowrap}
+#inv .tot{margin:14px 0 0 auto;width:300px}#inv .tot div{display:flex;justify-content:space-between;padding:5px 0}
+#inv .tot .big{background:var(--c);color:#fff;padding:9px 10px;border-radius:8px;font-weight:700;font-size:17px}
+#inv .words{margin-top:14px;background:#f3f6fb;border-radius:8px;padding:10px;font-weight:700}
+#inv .note{margin-top:14px;color:#555;white-space:pre-wrap;font-size:13px}
+#inv .sig{display:flex;justify-content:space-between;margin-top:50px;color:#666}#inv .sig div{border-top:1px solid #999;width:200px;text-align:center;padding-top:4px}
+@media(max-width:860px){.tabs{display:flex}main{grid-template-columns:minmax(0,1fr);padding:8px}main.pv .panel{display:none}main.ed #wrapc{display:none}}
+@media print{body{background:#fff}header,.tabs,.panel{display:none!important}main{display:block;padding:0}#wrap{padding:0;background:none;overflow:visible}#inv{box-shadow:none;width:100%;zoom:1!important;min-height:0}@page{size:A4;margin:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<header><h1>🧾 فاتورتي</h1><small>فاتورة أو عرض سعر بالعربي، الإجمالي بالحروف، PDF وواتساب، ببلاش</small></header>
+<div class="tabs"><button id="te" class="on">✏️ تعديل</button><button id="tp">👁️ معاينة</button></div>
+<main class="ed" id="main">
+<section class="panel">
+<div class="row"><div><label>النوع</label><select id="kind"><option>فاتورة</option><option>عرض سعر</option><option>إيصال استلام</option></select></div><div><label>رقم</label><input id="no" inputmode="numeric"></div></div>
+<div class="row"><div><label>التاريخ</label><input id="date" type="date"></div><div><label>العملة</label><select id="cur"><option value="جنيه|جنيهاً|قرش">جنيه مصري</option><option value="ريال|ريالاً|هللة">ريال سعودي</option><option value="درهم|درهماً|فلس">درهم إماراتي</option><option value="دولار|دولاراً|سنت">دولار</option></select></div></div>
+<h2>بياناتك</h2><label>الاسم / الشركة</label><input id="me"><label>تليفون / عنوان / رقم ضريبي</label><textarea id="meinfo"></textarea>
+<h2>العميل</h2><label>اسم العميل</label><input id="cl"><label>تليفون / عنوان</label><input id="clinfo">
+<h2>البنود <button class="btn l" id="add" style="display:inline-block;width:auto;padding:3px 12px;margin:0;float:left">+ بند</button></h2><div id="items"></div>
+<div class="row"><div><label>خصم (مبلغ)</label><input id="disc" inputmode="decimal"></div><div><label>ضريبة %</label><input id="tax" inputmode="decimal" placeholder="14"></div></div>
+<label>ملاحظات وشروط الدفع</label><textarea id="note" placeholder="الدفع خلال 7 أيام، ضمان سنة..."></textarea>
+<label>لون</label><select id="col"><option value="#1d4ed8">أزرق</option><option value="#0f766e">أخضر</option><option value="#be123c">أحمر</option><option value="#111827">أسود</option><option value="#7c3aed">بنفسجي</option></select>
+<button class="btn" id="pr">⬇️ حمّل PDF / اطبع</button>
+<a class="btn g" id="wa" target="_blank">📲 ابعت ملخص الفاتورة واتساب</a>
+<button class="btn l" id="nx">➕ فاتورة جديدة (يزود الرقم)</button>
+<p style="font-size:12px;color:#777">بياناتك على جهازك بس. في الطباعة اختار "حفظ كـ PDF" والهوامش "بدون".</p>
+</section>
+<section id="wrapc"><div id="wrap"><div id="inv"></div></div></section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var K="fatoorty_v1",D={kind:"فاتورة",no:"1",date:new Date().toISOString().slice(0,10),cur:"جنيه|جنيهاً|قرش",me:"",meinfo:"",cl:"",clinfo:"",items:[{n:"",q:1,p:""}],disc:"",tax:"",note:"",col:"#1d4ed8"};
+try{var s=JSON.parse(localStorage.getItem(K));if(s)for(var k in s)D[k]=s[k]}catch(e){}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function num(x){x=parseFloat(String(x).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(",","."));return isFinite(x)?x:0}
+function fmt(x){return x.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
+// tafqeet
+var U=["","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة","أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر"];
+var T=["","","عشرون","ثلاثون","أربعون","خمسون","ستون","سبعون","ثمانون","تسعون"];
+var H=["","مائة","مائتان","ثلاثمائة","أربعمائة","خمسمائة","ستمائة","سبعمائة","ثمانمائة","تسعمائة"];
+function b1000(n){var p=[],h=Math.floor(n/100),r=n%100;if(h)p.push(H[h]);if(r){if(r<20)p.push(U[r]);else{var u=r%10,t=Math.floor(r/10);p.push(u?U[u]+" و"+T[t]:T[t])}}return p.join(" و")}
+function words(n){if(n==0)return"صفر";var sc=[["",""],["ألف","آلاف","ألفاً"],["مليون","ملايين","مليوناً"],["مليار","مليارات","مليار"]],parts=[],i=0;
+ var g=[];while(n>0){g.push(n%1000);n=Math.floor(n/1000)}
+ for(i=g.length-1;i>=0;i--){var v=g[i];if(!v)continue;var t;
+  if(i==0)t=b1000(v);
+  else if(v==1)t=sc[i][0];
+  else if(v==2)t=sc[i][0]=="ألف"?"ألفان":sc[i][0]+"ان";
+  else if(v>=3&&v<=10)t=b1000(v)+" "+sc[i][1];
+  else t=b1000(v)+" "+((v%100>=11&&v%100<=99)?sc[i][2]:sc[i][0]);
+  if(i>0)t=t.replace(/مائتان(?= )/,"مائتا");parts.push(t)}
+ return parts.join(" و")}
+var CF={"جنيه":[["جنيه","جنيهان","جنيهات","جنيهاً"],["قرش","قرشان","قروش","قرشاً"]],"ريال":[["ريال","ريالان","ريالات","ريالاً"],["هللة","هللتان","هللات","هللة"]],"درهم":[["درهم","درهمان","دراهم","درهماً"],["فلس","فلسان","فلوس","فلساً"]],"دولار":[["دولار","دولاران","دولارات","دولاراً"],["سنت","سنتان","سنتات","سنتاً"]]};
+function unit(n,f){if(n==1)return f[0]+" واحد";if(n==2)return f[1];if(n>=3&&n<=10)return words(n)+" "+f[2];return words(n)+" "+((n%100>=11&&n%100<=99)?f[3]:f[0])}
+function money(x,cur){var f=CF[cur.split("|")[0]],t=Math.round(x*100),w=Math.floor(t/100),fr=t%100,o=[];if(w>0||fr==0)o.push(w==0?"صفر "+f[0][3]:unit(w,f[0]));if(fr)o.push(unit(fr,f[1]));return o.join(" و")+" فقط لا غير"}
+function calc(){var sub=0;D.items.forEach(function(i){sub+=num(i.q)*num(i.p)});var d=Math.min(num(D.disc),sub),tx=(sub-d)*num(D.tax)/100;return{sub:sub,d:d,tx:tx,tot:sub-d+tx}}
+function render(){var c=calc(),cur=D.cur.split("|")[0],inv=$("inv");inv.style.setProperty("--c",D.col);
+ var rows=D.items.filter(function(i){return i.n||num(i.p)}).map(function(i,k){return '<tr><td>'+(k+1)+'</td><td>'+esc(i.n)+'</td><td class="n">'+esc(num(i.q))+'</td><td class="n">'+fmt(num(i.p))+'</td><td class="n">'+fmt(num(i.q)*num(i.p))+'</td></tr>'}).join("");
+ inv.innerHTML='<div class="top"><div><h1>'+esc(D.kind)+'</h1><div style="font-size:16px;font-weight:700;margin-top:6px">'+esc(D.me||"اسمك / شركتك")+'</div><div style="white-space:pre-wrap;color:#555;font-size:13px">'+esc(D.meinfo)+'</div></div><div class="meta">رقم: <b>'+esc(D.no)+'</b><br>التاريخ: <b dir="ltr">'+esc(D.date)+'</b></div></div>'
+ +'<div class="two"><div><h4>العميل</h4><b>'+esc(D.cl||"-")+'</b><div style="color:#555;font-size:13px">'+esc(D.clinfo)+'</div></div></div>'
+ +'<table><tr><th>#</th><th>البيان</th><th class="n">الكمية</th><th class="n">السعر</th><th class="n">الإجمالي</th></tr>'+rows+'</table>'
+ +'<div class="tot"><div><span>المجموع</span><span>'+fmt(c.sub)+'</span></div>'+(c.d?'<div><span>الخصم</span><span>- '+fmt(c.d)+'</span></div>':'')+(c.tx?'<div><span>ضريبة '+esc(num(D.tax))+'%</span><span>'+fmt(c.tx)+'</span></div>':'')+'<div class="big"><span>الإجمالي ('+esc(cur)+')</span><span>'+fmt(c.tot)+'</span></div></div>'
+ +(c.tot>0?'<div class="words">'+money(c.tot,D.cur)+'</div>':'')
+ +(D.note?'<div class="note">'+esc(D.note)+'</div>':'')
+ +'<div class="sig"><div>توقيع المستلم</div><div>توقيع المورّد</div></div>';
+ var w=$("wrap").clientWidth-20;inv.style.zoom=w>0?Math.min(1,w/834):1;
+ $("wa").href="https://wa.me/?text="+encodeURIComponent(D.kind+" رقم "+D.no+" - "+(D.me||"")+"\n"+D.date+"\nالعميل: "+(D.cl||"-")+"\n"+D.items.filter(function(i){return i.n}).map(function(i){return "• "+i.n+" × "+num(i.q)+" = "+fmt(num(i.q)*num(i.p))}).join("\n")+"\nالإجمالي: "+fmt(c.tot)+" "+cur+"\n("+(c.tot>0?money(c.tot,D.cur):"")+")")}
+function save(){try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
+function upd(){save();render()}
+["kind","no","date","cur","me","meinfo","cl","clinfo","disc","tax","note","col"].forEach(function(f){var e=$(f);e.addEventListener("input",function(){D[f]=e.value;upd()});e.addEventListener("change",function(){D[f]=e.value;upd()})});
+function items(){$("items").innerHTML=D.items.map(function(i,k){return '<div class="it"><button class="x" data-k="'+k+'">✕</button><input data-k="'+k+'" data-f="n" value="'+esc(i.n)+'" placeholder="البيان"><div class="g" style="margin-top:5px"><span></span><input data-k="'+k+'" data-f="q" inputmode="decimal" value="'+esc(i.q)+'" placeholder="كمية"><input data-k="'+k+'" data-f="p" inputmode="decimal" value="'+esc(i.p)+'" placeholder="سعر"></div></div>'}).join("");
+ $("items").querySelectorAll("input").forEach(function(e){e.oninput=function(){D.items[+e.dataset.k][e.dataset.f]=e.value;upd()}});
+ $("items").querySelectorAll(".x").forEach(function(b){b.onclick=function(){D.items.splice(+b.dataset.k,1);if(!D.items.length)D.items.push({n:"",q:1,p:""});items();upd()}})}
+$("add").onclick=function(){D.items.push({n:"",q:1,p:""});items();upd()};
+$("nx").onclick=function(){D.no=String(num(D.no)+1);D.items=[{n:"",q:1,p:""}];D.disc="";D.cl="";D.clinfo="";D.date=new Date().toISOString().slice(0,10);fill()};
+$("pr").onclick=function(){document.title=D.kind+" "+D.no;window.print()};
+window.addEventListener("beforeprint",function(){$("inv").style.zoom=1});window.addEventListener("afterprint",render);window.addEventListener("resize",render);
+$("te").onclick=function(){$("main").className="ed";$("te").className="on";$("tp").className=""};$("tp").onclick=function(){$("main").className="pv";$("tp").className="on";$("te").className="";setTimeout(render,50)};
+function fill(){["kind","no","date","cur","me","meinfo","cl","clinfo","disc","tax","note","col"].forEach(function(f){$(f).value=D[f]});items();upd()}
+if(window.matchMedia("(max-width:860px)").matches)$("main").className="ed";else $("main").className="";
+fill();
+</script></body></html>
